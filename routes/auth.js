@@ -1,0 +1,14 @@
+const express = require('express');
+const router = express.Router();
+const { register, login, profile, deposit, withdraw, transfer, transactions, stats, changepassword } = require('../controllers/authController');
+const protect = require('../middleware/authMiddleware');
+router.post('/register', register);
+router.post('/login', login);
+router.get('/profile', protect, profile);
+router.post('/deposit', protect, deposit);
+router.post('/withdraw', protect, withdraw);
+router.post('/transfer', protect, transfer);
+router.get('/transactions', protect, transactions);
+router.get('/stats', protect, stats);
+router.post('/changepassword', protect, changepassword);
+module.exports = router;
