@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NovaPay — Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --emerald: #00c896;
+      --emerald-dark: #00a87e;
+      --navy: #0b1437;
+      --navy-mid: #112055;
+      --card: #131e45;
+      --text: #e8f0fe;
+      --muted: #7b8fc4;
+      --accent: #ff6b6b;
+      --gold: #ffd166;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--navy);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    /* Animated background blobs */
+    body::before {
+      content: '';
+      position: fixed;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(0,200,150,0.18) 0%, transparent 70%);
+      top: -150px; left: -150px;
+      animation: blobMove1 8s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(255,107,107,0.12) 0%, transparent 70%);
+      bottom: -100px; right: -100px;
+      animation: blobMove2 10s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+    @keyframes blobMove1 { from { transform: translate(0,0); } to { transform: translate(60px, 80px); } }
+    @keyframes blobMove2 { from { transform: translate(0,0); } to { transform: translate(-60px, -60px); } }
+
+    .page {
+      display: flex;
+      width: 100%;
+      max-width: 960px;
+      min-height: 560px;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+      position: relative;
+      z-index: 1;
+      margin: 24px;
+    }
+
+    /* Left panel */
+    .left {
+      flex: 1.1;
+      background: linear-gradient(145deg, #00c896 0%, #0099cc 60%, #112055 100%);
+      padding: 56px 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+    .left::before {
+      content: '';
+      position: absolute;
+      width: 360px; height: 360px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.12);
+      top: -80px; right: -80px;
+    }
+    .left::after {
+      content: '';
+      position: absolute;
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.08);
+      bottom: 40px; left: -60px;
+    }
+    .brand {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 2rem;
+      color: #fff;
+      letter-spacing: -1px;
+    }
+    .brand span { color: var(--navy); }
+    .left-copy h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .left-copy p {
+      color: rgba(255,255,255,0.8);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+    .left-stats {
+      display: flex;
+      gap: 32px;
+    }
+    .stat {
+      text-align: center;
+    }
+    .stat-val {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .stat-label { font-size: 0.75rem; color: rgba(255,255,255,0.65); margin-top: 2px; }
+
+    /* Right panel */
+    .right {
+      flex: 1;
+      background: var(--card);
+      padding: 56px 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .right h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .right p.sub {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 36px;
+    }
+    .form-group { margin-bottom: 20px; }
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+    input {
+      width: 100%;
+      background: var(--navy-mid);
+      border: 1.5px solid rgba(123,143,196,0.2);
+      border-radius: 12px;
+      padding: 14px 16px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus {
+      border-color: var(--emerald);
+      box-shadow: 0 0 0 3px rgba(0,200,150,0.15);
+    }
+    input::placeholder { color: rgba(123,143,196,0.5); }
+    .btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, var(--emerald) 0%, #00b4d8 100%);
+      color: var(--navy);
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: opacity 0.2s, transform 0.15s;
+      letter-spacing: 0.02em;
+    }
+    .btn:hover { opacity: 0.92; transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .switch {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+    .switch a {
+      color: var(--emerald);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .switch a:hover { text-decoration: underline; }
+    .msg {
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      margin-bottom: 18px;
+      display: none;
+    }
+    .msg.error { background: rgba(255,107,107,0.15); color: #ff6b6b; border: 1px solid rgba(255,107,107,0.3); }
+    .msg.success { background: rgba(0,200,150,0.15); color: var(--emerald); border: 1px solid rgba(0,200,150,0.3); }
+
+    @media (max-width: 700px) {
+      .left { display: none; }
+      .right { padding: 40px 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="left">
+      <div class="brand">Nova<span>Pay</span></div>
+      <div class="left-copy">
+        <h2>Banking built for the future</h2>
+        <p>Instant transfers, real-time balance tracking, and full transaction history — all in one place.</p>
+      </div>
+      <div class="left-stats">
+        <div class="stat"><div class="stat-val">₹0 fees</div><div class="stat-label">Transfers</div></div>
+        <div class="stat"><div class="stat-val">256-bit</div><div class="stat-label">Encryption</div></div>
+        <div class="stat"><div class="stat-val">24/7</div><div class="stat-label">Support</div></div>
+      </div>
+    </div>
+    <div class="right">
+      <h3>Welcome back</h3>
+      <p class="sub">Sign in to your NovaPay account</p>
+      <div class="msg" id="msg"></div>
+      <div class="form-group">
+        <label>Email address</label>
+        <input type="email" id="email" placeholder="you@example.com" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="••••••••" />
+      </div>
+      <button class="btn" onclick="login()">Sign In</button>
+      <div class="switch">Don't have an account? <a href="register.html">Create one</a></div>
+    </div>
+  </div>
+
+  <script>
+    async function login() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const msg = document.getElementById('msg');
+      msg.style.display = 'none';
+
+      if (!email || !password) {
+        showMsg('Please fill in all fields.', 'error'); return;
+      }
+      try {
+        const res = await fetch('http://localhost:5000/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          localStorage.setItem('token', data.token);
+          showMsg('Login successful! Redirecting...', 'success');
+          setTimeout(() => window.location.href = 'dashboard.html', 1000);
+        } else {
+          showMsg(data.message || 'Login failed.', 'error');
+        }
+      } catch (e) {
+        showMsg('Cannot connect to server. Make sure it is running.', 'error');
+      }
+    }
+
+    function showMsg(text, type) {
+      const msg = document.getElementById('msg');
+      msg.textContent = text;
+      msg.className = 'msg ' + type;
+      msg.style.display = 'block';
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+  </script>
+</body>
+</html>

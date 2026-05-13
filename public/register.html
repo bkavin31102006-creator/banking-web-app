@@ -1,1 +1,471 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>BankApp - Register</title><style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:Arial,sans-serif;min-height:100vh;background:linear-gradient(135deg,#1a56db 0%,#1e429f 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 16px;}.auth-header{text-align:center;margin-bottom:24px;}.icon{width:52px;height:52px;background:rgba(255,255,255,0.2);border-radius:14px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:10px;}.icon svg{width:26px;height:26px;fill:white;}.auth-header h2{color:white;font-size:22px;font-weight:700;}.auth-header p{color:rgba(255,255,255,0.75);font-size:14px;margin-top:4px;}.card{background:white;border-radius:16px;padding:28px 24px;width:100%;max-width:360px;box-shadow:0 20px 60px rgba(0,0,0,0.2);}.field{margin-bottom:14px;}.field label{display:block;font-size:11px;font-weight:700;color:#6b7280;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px;}.field input{width:100%;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;color:#111827;outline:none;transition:border 0.2s;}.field input:focus{border-color:#1a56db;}.meter-wrap{margin-top:8px;}.meter-bars{display:flex;gap:4px;margin-bottom:5px;}.bar{flex:1;height:4px;border-radius:4px;background:#e5e7eb;transition:background 0.3s;}.meter-label{font-size:11px;font-weight:600;color:#6b7280;}.strength-1 .bar:nth-child(1){background:#c81e1e;}.strength-2 .bar:nth-child(1),.strength-2 .bar:nth-child(2){background:#e97316;}.strength-3 .bar:nth-child(1),.strength-3 .bar:nth-child(2),.strength-3 .bar:nth-child(3){background:#eab308;}.strength-4 .bar{background:#057a55;}.btn-primary{width:100%;padding:12px;background:#1a56db;color:white;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;margin-top:4px;}.btn-primary:hover{background:#1e429f;}.link-row{text-align:center;margin-top:14px;font-size:13px;color:#6b7280;}.link-row a{color:#1a56db;text-decoration:none;font-weight:600;}.msg{text-align:center;font-size:13px;padding:10px;border-radius:8px;margin-bottom:12px;display:none;}.error{background:#fde8e8;color:#9b1c1c;display:block;}.success{background:#def7ec;color:#03543f;display:block;}</style></head><body><div class="auth-header"><div class="icon"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div><h2>BankApp</h2><p>Create your account</p></div><div class="card"><div id="msg" class="msg"></div><div class="field"><label>Full Name</label><input type="text" id="name" placeholder="Arun Kumar"></div><div class="field"><label>Email</label><input type="email" id="email" placeholder="you@example.com"></div><div class="field"><label>Mobile Number</label><input type="tel" id="mobile" placeholder="10-digit mobile number" maxlength="10"></div><div class="field"><label>Password</label><input type="password" id="password" placeholder="••••••••" oninput="checkStrength(this.value)"><div class="meter-wrap"><div class="meter-bars strength-0" id="meter"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div><div class="meter-label" id="meterLabel">Enter a password</div></div></div><button class="btn-primary" onclick="register()">Create account</button><div class="link-row">Already have an account? <a href="index.html">Sign in</a></div></div><script>function checkStrength(pw){const meter=document.getElementById("meter");const label=document.getElementById("meterLabel");let score=0;if(pw.length>=8)score++;if(/[A-Z]/.test(pw))score++;if(/[0-9]/.test(pw))score++;if(/[^A-Za-z0-9]/.test(pw))score++;meter.className="meter-bars strength-"+score;const labels=["Enter a password","Weak — too simple","Fair — could be stronger","Good — almost there","Strong password!"];const colors=["#6b7280","#c81e1e","#e97316","#eab308","#057a55"];label.textContent=pw.length===0?labels[0]:labels[score];label.style.color=pw.length===0?colors[0]:colors[score];}function register(){const name=document.getElementById("name").value;const email=document.getElementById("email").value;const mobile=document.getElementById("mobile").value;const password=document.getElementById("password").value;const msg=document.getElementById("msg");if(!name||!email||!mobile||!password){msg.className="msg error";msg.textContent="Please fill in all fields";return;}if(mobile.length!==10||!/^[0-9]+$/.test(mobile)){msg.className="msg error";msg.textContent="Enter a valid 10-digit mobile number";return;}if(password.length<6){msg.className="msg error";msg.textContent="Password must be at least 6 characters";return;}fetch("/api/auth/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,email,mobile,password})}).then(r=>r.json()).then(data=>{if(data.userId){msg.className="msg success";msg.textContent="Account created! Redirecting...";setTimeout(()=>location.href="index.html",1500);}else{msg.className="msg error";msg.textContent=data.message;}}).catch(()=>{msg.className="msg error";msg.textContent="Something went wrong";});}  </script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>NovaPay — Register</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+
+    :root{
+      --emerald:#00c896;
+      --navy:#0b1437;
+      --navy-mid:#112055;
+      --card:#131e45;
+      --text:#e8f0fe;
+      --muted:#7b8fc4;
+    }
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    body{
+      font-family:'DM Sans',sans-serif;
+      background:var(--navy);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      position:relative;
+    }
+
+    .page{
+      display:flex;
+      width:100%;
+      max-width:960px;
+      border-radius:28px;
+      overflow:hidden;
+      box-shadow:0 40px 100px rgba(0,0,0,0.5);
+      margin:24px;
+    }
+
+    .left{
+      flex:1;
+      background:linear-gradient(145deg,#0b1437 0%,#112055 50%,#1a3a6e 100%);
+      padding:56px 48px;
+      color:white;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+
+    .brand{
+      font-family:'Syne',sans-serif;
+      font-size:2rem;
+      font-weight:800;
+      color:var(--emerald);
+    }
+
+    .brand span{
+      color:white;
+    }
+
+    .steps{
+      display:flex;
+      flex-direction:column;
+      gap:24px;
+    }
+
+    .step{
+      display:flex;
+      gap:16px;
+    }
+
+    .step-num{
+      width:36px;
+      height:36px;
+      border-radius:50%;
+      background:linear-gradient(135deg,var(--emerald),#00b4d8);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#0b1437;
+      font-weight:700;
+    }
+
+    .step-text h4{
+      margin-bottom:5px;
+    }
+
+    .step-text p{
+      color:var(--muted);
+      font-size:0.9rem;
+    }
+
+    .right{
+      flex:1.1;
+      background:var(--card);
+      padding:56px 48px;
+      color:white;
+    }
+
+    .right h3{
+      font-family:'Syne',sans-serif;
+      font-size:2rem;
+      margin-bottom:8px;
+    }
+
+    .sub{
+      color:var(--muted);
+      margin-bottom:30px;
+    }
+
+    .form-group{
+      margin-bottom:18px;
+    }
+
+    label{
+      display:block;
+      margin-bottom:8px;
+      color:var(--muted);
+      font-size:0.8rem;
+      text-transform:uppercase;
+    }
+
+    input{
+      width:100%;
+      background:var(--navy-mid);
+      border:1px solid rgba(255,255,255,0.1);
+      border-radius:12px;
+      padding:14px;
+      color:white;
+      outline:none;
+      font-size:0.95rem;
+    }
+
+    input:focus{
+      border-color:var(--emerald);
+    }
+
+    .strength-wrapper{
+      width:100%;
+      height:8px;
+      background:rgba(255,255,255,0.08);
+      border-radius:20px;
+      overflow:hidden;
+      margin-top:10px;
+    }
+
+    #strengthBar{
+      width:0%;
+      height:100%;
+      border-radius:20px;
+      transition:0.3s;
+    }
+
+    #strengthText{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:0.85rem;
+    }
+
+    .btn{
+      width:100%;
+      padding:15px;
+      border:none;
+      border-radius:12px;
+      background:linear-gradient(135deg,var(--emerald),#00b4d8);
+      color:#0b1437;
+      font-family:'Syne',sans-serif;
+      font-weight:700;
+      cursor:pointer;
+      margin-top:20px;
+      font-size:1rem;
+    }
+
+    .msg{
+      display:none;
+      margin-bottom:18px;
+      padding:12px;
+      border-radius:10px;
+      font-size:0.9rem;
+    }
+
+    .msg.error{
+      background:rgba(255,0,0,0.1);
+      color:#ff6b6b;
+    }
+
+    .msg.success{
+      background:rgba(0,255,150,0.1);
+      color:#00d09c;
+    }
+
+    .switch{
+      margin-top:20px;
+      text-align:center;
+      color:var(--muted);
+    }
+
+    .switch a{
+      color:var(--emerald);
+      text-decoration:none;
+    }
+
+    @media(max-width:700px){
+
+      .left{
+        display:none;
+      }
+
+      .right{
+        padding:40px 28px;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <div class="page">
+
+    <div class="left">
+
+      <div class="brand">
+        Nova<span>Pay</span>
+      </div>
+
+      <div class="steps">
+
+        <div class="step">
+          <div class="step-num">1</div>
+
+          <div class="step-text">
+            <h4>Create account</h4>
+            <p>Securely register your banking profile.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+
+          <div class="step-text">
+            <h4>Login instantly</h4>
+            <p>Access your account securely.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+
+          <div class="step-text">
+            <h4>Manage finances</h4>
+            <p>Deposit, transfer and monitor transactions.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div>
+        NovaPay © 2025
+      </div>
+
+    </div>
+
+    <div class="right">
+
+      <h3>Create account</h3>
+
+      <p class="sub">
+        Join NovaPay in seconds
+      </p>
+
+      <div class="msg" id="msg"></div>
+
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="name" placeholder="Alice Johnson">
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="alice@example.com">
+      </div>
+
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="text" id="phone" placeholder="9876543210">
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Min. 6 characters">
+      </div>
+
+      <div class="strength-wrapper">
+        <div id="strengthBar"></div>
+      </div>
+
+      <p id="strengthText"></p>
+
+      <button class="btn" onclick="register()">
+        Create Account
+      </button>
+
+      <div class="switch">
+        Already have an account?
+        <a href="login.html">Sign in</a>
+      </div>
+
+    </div>
+
+  </div>
+
+<script>
+
+const passwordInput = document.getElementById('password');
+const strengthBar = document.getElementById('strengthBar');
+const strengthText = document.getElementById('strengthText');
+
+passwordInput.addEventListener('input', checkPasswordStrength);
+
+function checkPasswordStrength(){
+
+  const password = passwordInput.value;
+
+  let score = 0;
+
+  if(password.length >= 6) score++;
+
+  if(/[A-Z]/.test(password)) score++;
+
+  if(/[0-9]/.test(password)) score++;
+
+  if(/[^A-Za-z0-9]/.test(password)) score++;
+
+  if(password.length === 0){
+
+    strengthBar.style.width = '0%';
+    strengthText.innerText = '';
+    return;
+
+  }
+
+  if(score === 1){
+
+    strengthBar.style.width = '25%';
+    strengthBar.style.background = '#ff4d67';
+    strengthText.innerText = 'Weak Password';
+
+  }else if(score === 2){
+
+    strengthBar.style.width = '50%';
+    strengthBar.style.background = '#ffb347';
+    strengthText.innerText = 'Medium Password';
+
+  }else if(score === 3){
+
+    strengthBar.style.width = '75%';
+    strengthBar.style.background = '#5ca8ff';
+    strengthText.innerText = 'Strong Password';
+
+  }else{
+
+    strengthBar.style.width = '100%';
+    strengthBar.style.background = '#00d09c';
+    strengthText.innerText = 'Very Strong Password';
+
+  }
+
+}
+
+async function register(){
+
+  const name = document.getElementById('name').value.trim();
+
+  const email = document.getElementById('email').value.trim();
+
+  const phone = document.getElementById('phone').value.trim();
+
+  const password = document.getElementById('password').value;
+
+  if(!name || !email || !phone || !password){
+
+    showMsg('Please fill all fields','error');
+    return;
+
+  }
+
+  try{
+
+    const res = await fetch(
+      'http://localhost:5000/api/auth/register',
+      {
+        method:'POST',
+
+        headers:{
+          'Content-Type':'application/json'
+        },
+
+        body:JSON.stringify({
+          name,
+          email,
+          phone,
+          password
+        })
+      }
+    );
+
+    const data = await res.json();
+
+    if(res.ok){
+
+      showMsg('Account created successfully!','success');
+
+      setTimeout(() => {
+
+        window.location.href = 'login.html';
+
+      },1500);
+
+    }else{
+
+      showMsg(data.message || 'Registration failed','error');
+
+    }
+
+  }catch(err){
+
+    showMsg('Cannot connect to server','error');
+
+  }
+
+}
+
+function showMsg(text,type){
+
+  const msg = document.getElementById('msg');
+
+  msg.textContent = text;
+
+  msg.className = 'msg ' + type;
+
+  msg.style.display = 'block';
+
+}
+
+document.addEventListener('keydown', e => {
+
+  if(e.key === 'Enter'){
+
+    register();
+
+  }
+
+});
+
+</script>
+
+</body>
+</html>

@@ -1,1 +1,788 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>BankApp - Dashboard</title><style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:Arial,sans-serif;background:#f3f4f6;min-height:100vh;}nav{background:#1a56db;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;}nav h1{color:white;font-size:16px;font-weight:700;}.nav-right{display:flex;align-items:center;gap:10px;}.nav-right span{color:rgba(255,255,255,0.8);font-size:13px;}.nav-right button{background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.3);padding:6px 12px;border-radius:7px;font-size:12px;cursor:pointer;}.hero{background:linear-gradient(135deg,#1a56db,#1e429f);padding:20px 16px 40px;}.greeting{color:rgba(255,255,255,0.7);font-size:13px;}.uname{color:white;font-size:19px;font-weight:700;margin-bottom:3px;margin-top:2px;}.acno{color:rgba(255,255,255,0.6);font-size:12px;margin-bottom:16px;}.bal-box{background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.22);border-radius:12px;padding:16px;}.bal-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}.bal-label{color:rgba(255,255,255,0.7);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;}.show-btn{background:none;border:1px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.8);font-size:11px;padding:3px 10px;border-radius:5px;cursor:pointer;}.bal-amt{color:white;font-size:32px;font-weight:700;filter:blur(7px);transition:filter 0.3s;}.bal-amt.visible{filter:blur(0);}.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 12px 0;margin-top:-20px;}.stat-card{background:white;border:0.5px solid #e5e7eb;border-radius:12px;padding:14px;}.slabel{font-size:11px;color:#6b7280;margin-bottom:4px;}.sval{font-size:17px;font-weight:700;}.sval.green{color:#057a55;}.sval.red{color:#c81e1e;}.dbody{padding:10px 12px;}.section-title{font-size:14px;font-weight:700;color:#111827;margin:14px 0 10px;}.action-card{background:white;border:0.5px solid #e5e7eb;border-radius:12px;padding:16px;margin-bottom:12px;}.amount-wrap{position:relative;margin-bottom:12px;}.amount-wrap span{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#6b7280;font-size:14px;font-weight:600;}.amount-wrap input{width:100%;padding:10px 12px 10px 26px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;color:#111827;outline:none;}.amount-wrap input:focus{border-color:#1a56db;}.btn-row{display:flex;gap:8px;}.btn-dep{flex:1;padding:10px;background:#057a55;color:white;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;}.btn-with{flex:1;padding:10px;background:#c81e1e;color:white;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;}.btn-transfer{width:100%;padding:10px;background:#1a56db;color:white;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;margin-top:8px;}.transfer-fields{display:none;margin-top:12px;border-top:1px solid #f3f4f6;padding-top:12px;}.transfer-fields.show{display:block;}.transfer-fields input{width:100%;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:13px;color:#111827;outline:none;margin-bottom:8px;}.btn-send{width:100%;padding:10px;background:#1a56db;color:white;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;}.msg{text-align:center;font-size:13px;padding:10px;border-radius:8px;margin-top:10px;display:none;}.error{background:#fde8e8;color:#9b1c1c;display:block;}.success{background:#def7ec;color:#03543f;display:block;}.tx-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:0.5px solid #f3f4f6;}.tx-item:last-child{border-bottom:none;}.tx-left{display:flex;align-items:center;gap:10px;}.tx-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}.tx-icon.dep{background:#d1fae5;}.tx-icon.with{background:#fee2e2;}.tx-icon.tin{background:#dbeafe;}.tx-icon.tout{background:#ede9fe;}.tx-icon svg{width:16px;height:16px;}.tx-name{font-size:13px;font-weight:600;color:#111827;}.tx-date{font-size:11px;color:#9ca3af;margin-top:1px;}.tx-amt{font-size:13px;font-weight:700;white-space:nowrap;}.tx-amt.pos{color:#057a55;}.tx-amt.neg{color:#c81e1e;}.bottom-nav{display:flex;background:white;border-top:1px solid #e5e7eb;position:sticky;bottom:0;}.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 4px;font-size:10px;color:#9ca3af;cursor:pointer;gap:3px;text-decoration:none;}.bnav-item.active{color:#1a56db;}.bnav-item svg{width:20px;height:20px;}</style></head><body><nav><h1>BankApp</h1><div class="nav-right"><span id="navName"></span><button onclick="logout()">Logout</button></div></nav><div class="hero"><div class="greeting">Good day,</div><div class="uname" id="uname">Loading...</div><div class="acno" id="acno"></div><div class="bal-box"><div class="bal-top"><span class="bal-label">Current balance</span><button class="show-btn" onclick="toggleBal()" id="showBtn">Show</button></div><div class="bal-amt" id="balance">₹0.00</div></div></div><div class="stats-grid"><div class="stat-card"><div class="slabel">Total deposited</div><div class="sval green" id="totalDep">₹0</div></div><div class="stat-card"><div class="slabel">Total withdrawn</div><div class="sval red" id="totalWith">₹0</div></div></div><div class="dbody"><div class="section-title">Make a transaction</div><div class="action-card"><div class="amount-wrap"><span>₹</span><input type="number" id="amount" placeholder="0.00" min="1"></div><div class="btn-row"><button class="btn-dep" onclick="deposit()">Deposit</button><button class="btn-with" onclick="withdraw()">Withdraw</button></div><button class="btn-transfer" onclick="toggleTransfer()">Transfer to another user</button><div class="transfer-fields" id="transferFields"><input type="tel" id="toMobile" placeholder="Recipient mobile number (10 digits)" maxlength="10"><input type="number" id="transferAmount" placeholder="Amount (₹)" min="1"><button class="btn-send" onclick="transfer()">Send money</button></div><div class="msg" id="msg"></div></div><div class="section-title">Recent activity</div><div class="action-card" style="padding:4px 14px;" id="recentTx"><div style="text-align:center;color:#9ca3af;padding:20px;font-size:13px;">Loading...</div></div></div><div class="bottom-nav"><a class="bnav-item active" href="dashboard.html"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Home</a><a class="bnav-item" href="history.html"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2.05V4.05C17.39 4.59 20.5 8.58 19.96 12.97C19.5 16.61 16.64 19.5 13 19.93V21.93C18.5 21.38 22.5 16.5 21.95 11C21.5 6.25 17.73 2.5 13 2.05M11 2.06C9.05 2.25 7.19 3 5.67 4.26L7.1 5.74C8.22 4.84 9.57 4.26 11 4.06V2.06M4.26 5.67C3 7.19 2.25 9.04 2.05 11H4.05C4.24 9.58 4.8 8.23 5.69 7.1L4.26 5.67M2.06 13C2.26 14.96 3.03 16.81 4.27 18.33L5.69 16.9C4.81 15.77 4.24 14.42 4.06 13H2.06M7.06 18.37L5.67 19.74C7.18 21 9.04 21.79 11 22V20C9.58 19.82 8.23 19.25 7.06 18.37Z"/></svg>History</a><a class="bnav-item" href="settings.html"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Profile</a></div><script>const token=localStorage.getItem("token");if(!token){location.href="index.html";}let balVisible=false;function toggleBal(){balVisible=!balVisible;document.getElementById("balance").classList.toggle("visible",balVisible);document.getElementById("showBtn").textContent=balVisible?"Hide":"Show";}function fmt(n){return "₹"+parseFloat(n).toLocaleString("en-IN",{minimumFractionDigits:2});}function loadProfile(){fetch("/api/auth/profile",{headers:{"Authorization":"Bearer "+token}}).then(r=>r.json()).then(d=>{document.getElementById("uname").textContent=d.name;document.getElementById("navName").textContent=d.name;document.getElementById("acno").textContent="Account: "+d.account_number_hidden;document.getElementById("balance").textContent=fmt(d.balance);}).catch(()=>location.href="index.html");}function loadStats(){fetch("/api/auth/stats",{headers:{"Authorization":"Bearer "+token}}).then(r=>r.json()).then(d=>{document.getElementById("totalDep").textContent=fmt(d.totalDeposited);document.getElementById("totalWith").textContent=fmt(d.totalWithdrawn);});}function txIcon(type){if(type==="deposit")return'<div class="tx-icon dep"><svg viewBox="0 0 24 24" fill="#057a55"><path d="M19 11H7.83l4.88-4.88c.39-.39.39-1.03 0-1.42-.39-.39-1.02-.39-1.41 0l-6.59 6.59c-.39.39-.39 1.02 0 1.41l6.59 6.59c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L7.83 13H19c.55 0 1-.45 1-1s-.45-1-1-1z"/></svg></div>';if(type==="withdrawal")return'<div class="tx-icon with"><svg viewBox="0 0 24 24" fill="#c81e1e"><path d="M5 11h11.17l-4.88-4.88c-.39-.39-.39-1.03 0-1.42.39-.39 1.02-.39 1.41 0l6.59 6.59c.39.39.39 1.02 0 1.41l-6.59 6.59c-.39.39-1.02.39-1.41 0-.39-.39-.39-1.02 0-1.41L16.17 13H5c-.55 0-1-.45-1-1s.45-1 1-1z"/></svg></div>';if(type==="transfer_in")return'<div class="tx-icon tin"><svg viewBox="0 0 24 24" fill="#1a56db"><path d="M19 11H7.83l4.88-4.88c.39-.39.39-1.03 0-1.42-.39-.39-1.02-.39-1.41 0l-6.59 6.59c-.39.39-.39 1.02 0 1.41l6.59 6.59c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L7.83 13H19c.55 0 1-.45 1-1s-.45-1-1-1z"/></svg></div>';return'<div class="tx-icon tout"><svg viewBox="0 0 24 24" fill="#7c3aed"><path d="M5 11h11.17l-4.88-4.88c-.39-.39-.39-1.03 0-1.42.39-.39 1.02-.39 1.41 0l6.59 6.59c.39.39.39 1.02 0 1.41l-6.59 6.59c-.39.39-1.02.39-1.41 0-.39-.39-.39-1.02 0-1.41L16.17 13H5c-.55 0-1-.45-1-1s.45-1 1-1z"/></svg></div>';}function loadRecent(){fetch("/api/auth/transactions",{headers:{"Authorization":"Bearer "+token}}).then(r=>r.json()).then(rows=>{const el=document.getElementById("recentTx");if(!rows.length){el.innerHTML='<div style="text-align:center;color:#9ca3af;padding:20px;font-size:13px;">No transactions yet</div>';return;}const items=rows.slice(0,4).map(t=>{const pos=t.type==="deposit"||t.type==="transfer_in";const sign=pos?"+":"-";const cls=pos?"pos":"neg";const date=new Date(t.created_at).toLocaleString("en-IN",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});return'<div class="tx-item"><div class="tx-left">'+txIcon(t.type)+'<div><div class="tx-name">'+t.description+'</div><div class="tx-date">'+date+'</div></div></div><div class="tx-amt '+cls+'">'+sign+"₹"+parseFloat(t.amount).toLocaleString("en-IN")+'</div></div>';}).join("");el.innerHTML='<div style="padding:0;">'+items+"</div>";});}function deposit(){const amount=parseFloat(document.getElementById("amount").value);const msg=document.getElementById("msg");if(!amount||amount<=0){msg.className="msg error";msg.textContent="Enter a valid amount";return;}fetch("/api/auth/deposit",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({amount})}).then(r=>r.json()).then(d=>{if(d.balance!==undefined){msg.className="msg success";msg.textContent=d.message;document.getElementById("balance").textContent=fmt(d.balance);document.getElementById("amount").value="";loadStats();loadRecent();}else{msg.className="msg error";msg.textContent=d.message;}});}function withdraw(){const amount=parseFloat(document.getElementById("amount").value);const msg=document.getElementById("msg");if(!amount||amount<=0){msg.className="msg error";msg.textContent="Enter a valid amount";return;}fetch("/api/auth/withdraw",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({amount})}).then(r=>r.json()).then(d=>{if(d.balance!==undefined){msg.className="msg success";msg.textContent=d.message;document.getElementById("balance").textContent=fmt(d.balance);document.getElementById("amount").value="";loadStats();loadRecent();}else{msg.className="msg error";msg.textContent=d.message;}});}function toggleTransfer(){document.getElementById("transferFields").classList.toggle("show");}function transfer(){const mobile=document.getElementById("toMobile").value.trim();const amount=parseFloat(document.getElementById("transferAmount").value);const msg=document.getElementById("msg");if(!mobile||mobile.length!==10||!/^[0-9]+$/.test(mobile)){msg.className="msg error";msg.textContent="Enter a valid 10-digit mobile number";return;}if(!amount||amount<=0){msg.className="msg error";msg.textContent="Enter a valid amount";return;}fetch("/api/auth/transfer",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({mobile,amount})}).then(r=>r.json()).then(d=>{if(d.balance!==undefined){msg.className="msg success";msg.textContent=d.message;document.getElementById("balance").textContent=fmt(d.balance);document.getElementById("toMobile").value="";document.getElementById("transferAmount").value="";loadStats();loadRecent();}else{msg.className="msg error";msg.textContent=d.message;}});}function logout(){localStorage.clear();location.href="index.html";}loadProfile();loadStats();loadRecent();</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NovaPay Dashboard</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    :root{
+      --bg:#081028;
+      --sidebar:#0d1735;
+      --card:#111c44;
+      --card2:#152452;
+      --accent:#00d09c;
+      --text:#edf3ff;
+      --muted:#90a0d9;
+      --border:rgba(255,255,255,0.06);
+    }
+
+    body{
+      font-family:'DM Sans',sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+    }
+
+    .sidebar{
+      width:260px;
+      background:linear-gradient(180deg,#0b1437 0%,#101d49 100%);
+      padding:30px 22px;
+      border-right:1px solid var(--border);
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+
+    .logo{
+      font-family:'Syne',sans-serif;
+      font-size:2rem;
+      font-weight:800;
+      color:var(--accent);
+      margin-bottom:40px;
+    }
+
+    .logo span{
+      color:white;
+    }
+
+    .nav{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    .nav button{
+      background:transparent;
+      border:none;
+      color:var(--muted);
+      text-align:left;
+      padding:14px 18px;
+      border-radius:14px;
+      font-size:0.95rem;
+      cursor:pointer;
+      transition:0.25s;
+      font-family:'DM Sans',sans-serif;
+    }
+
+    .nav button:hover{
+      background:rgba(0,208,156,0.12);
+      color:white;
+      transform:translateX(4px);
+    }
+
+    .logout{
+      background:#ff4d67 !important;
+      color:white !important;
+    }
+
+    .main{
+      flex:1;
+      padding:34px;
+      overflow-y:auto;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:28px;
+    }
+
+    .welcome h1{
+      font-family:'Syne',sans-serif;
+      font-size:2rem;
+      margin-bottom:6px;
+    }
+
+    .welcome p{
+      color:var(--muted);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:24px;
+      margin-bottom:26px;
+    }
+
+    .card{
+      background:linear-gradient(145deg,var(--card),var(--card2));
+      border-radius:24px;
+      padding:24px;
+      border:1px solid var(--border);
+      box-shadow:0 15px 35px rgba(0,0,0,0.25);
+      transition:0.3s;
+    }
+
+    .card:hover{
+      transform:translateY(-5px);
+    }
+
+    .balance-card{
+      grid-column:span 2;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .balance-card::before{
+      content:'';
+      position:absolute;
+      width:220px;
+      height:220px;
+      background:rgba(0,208,156,0.08);
+      border-radius:50%;
+      top:-80px;
+      right:-80px;
+    }
+
+    .label{
+      color:var(--muted);
+      font-size:0.85rem;
+      margin-bottom:10px;
+      text-transform:uppercase;
+      letter-spacing:1px;
+    }
+
+    .balance{
+      font-size:3rem;
+      font-weight:700;
+      font-family:'Syne',sans-serif;
+      margin-bottom:14px;
+    }
+
+    .acc{
+      color:#b8c7ff;
+      font-size:0.95rem;
+    }
+
+    .profile-info{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    .info-row{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      border-bottom:1px solid rgba(255,255,255,0.05);
+      padding-bottom:10px;
+    }
+
+    .info-row span:first-child{
+      color:var(--muted);
+    }
+
+    .actions{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:16px;
+      margin-top:20px;
+    }
+
+    .action-btn{
+      border:none;
+      border-radius:18px;
+      padding:18px;
+      background:rgba(255,255,255,0.04);
+      color:white;
+      cursor:pointer;
+      transition:0.25s;
+      font-size:0.95rem;
+      font-weight:600;
+    }
+
+    .action-btn:hover{
+      background:var(--accent);
+      color:#081028;
+      transform:translateY(-3px);
+    }
+
+    .transactions{
+      margin-top:30px;
+    }
+
+    .transactions h2{
+      margin-bottom:20px;
+      font-family:'Syne',sans-serif;
+    }
+
+    .transaction-list{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    .transaction{
+      background:var(--card);
+      border:1px solid var(--border);
+      padding:18px;
+      border-radius:18px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      transition:0.25s;
+    }
+
+    .transaction:hover{
+      transform:translateX(4px);
+    }
+
+    .type{
+      font-weight:700;
+      margin-bottom:5px;
+      text-transform:capitalize;
+    }
+
+    .date{
+      color:var(--muted);
+      font-size:0.82rem;
+    }
+
+    .amount{
+      font-weight:700;
+      font-size:1rem;
+    }
+
+    .deposit{
+      color:#00d09c;
+    }
+
+    .withdrawal{
+      color:#ff5d73;
+    }
+
+    .transfer{
+      color:#5ca8ff;
+    }
+
+    @media(max-width:900px){
+
+      body{
+        flex-direction:column;
+      }
+
+      .sidebar{
+        width:100%;
+      }
+
+      .balance-card{
+        grid-column:span 1;
+      }
+
+      .actions{
+        grid-template-columns:1fr;
+      }
+      #toggleAccBtn{
+        margin-left:12px;
+        background:rgba(255,255,255,0.08);
+        border:none;
+        color:white;
+        padding:6px 12px;
+        border-radius:10px;
+        cursor:pointer;
+      }  
+      .profile-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:18px;
+  margin-top:20px;
+}
+
+.profile-grid div{
+  background:rgba(255,255,255,0.03);
+  padding:18px;
+  border-radius:18px;
+}
+
+.profile-grid h4{
+  margin-bottom:8px;
+  color:#90a0d9;
+} 
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="sidebar">
+
+    <div>
+
+      <div class="logo">
+        Nova<span>Pay</span>
+      </div>
+
+      <div class="nav">
+        <button>Dashboard</button>
+        <button>Deposit</button>
+        <button>Withdraw</button>
+        <button>Transfer</button>
+        <button>Transactions</button>
+      </div>
+
+    </div>
+
+    <button class="nav logout" onclick="logout()">
+      Logout
+    </button>
+
+  </div>
+
+  <div class="main">
+
+    <div class="topbar">
+      <div class="welcome">
+        <h1 id="welcomeName">Welcome</h1>
+        <p>Manage your banking activities securely.</p>
+      </div>
+    </div>
+
+    <div class="grid">
+
+      <div class="card balance-card">
+        <div class="label">Available Balance</div>
+        <div class="balance" id="balance">₹0</div>
+        <div class="acc">
+          Account Number:
+          <span id="accountNumber">••••••••</span>
+          <button id="toggleAccBtn" onclick="toggleAccountNumber()">
+          Show
+          </button>
+        </div>
+      </div>
+      <div class="card profile-card">
+
+          <div class="label">Account Profile</div>
+
+      <div class="profile-grid">
+
+      <div>
+      <h4>Full Name</h4>
+      <p id="profileName"></p>
+    </div>
+
+    <div>
+      <h4>Email</h4>
+      <p id="profileEmail"></p>
+    </div>
+
+    <div>
+      <h4>Phone Number</h4>
+      <p id="profilePhone"></p>
+    </div>
+
+    <div>
+      <h4>Account Type</h4>
+      <p>Savings Account</p>
+    </div>
+
+  </div>
+
+</div>
+
+      <div class="card">
+
+        <div class="label">Profile Information</div>
+
+        <div class="profile-info">
+
+          <div class="info-row">
+            <span>Name</span>
+            <span id="name"></span>
+          </div>
+
+          <div class="info-row">
+            <span>Email</span>
+            <span id="email"></span>
+          </div>
+
+          <div class="info-row">
+            <span>Phone</span>
+            <span id="phone"></span>
+          </div>
+
+          <div class="info-row">
+            <span>Joined</span>
+            <span id="joined"></span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <div class="label">Quick Actions</div>
+
+      
+
+       <div class="actions">
+
+         <button class="action-btn" onclick="depositMoney()">
+          Deposit
+         </button>
+
+         <button class="action-btn" onclick="withdrawMoney()">
+          Withdraw
+         </button>
+
+         <button class="action-btn" onclick="transferMoney()">
+          Transfer
+         </button>
+
+</div>
+
+      </div>
+
+    </div>
+
+    <div class="transactions">
+
+      <h2>Recent Transactions</h2>
+
+      <div class="transaction-list" id="transactionList">
+
+      </div>
+
+    </div>
+
+  </div>
+
+<script>
+    
+
+    let realAccountNumber = '';
+    let visible = false;
+
+    const API = 'http://localhost:5000/api/auth';
+
+async function loadProfile(){
+
+  const token = localStorage.getItem('token');
+
+  if(!token){
+    window.location.href = 'login.html';
+    return;
+  }
+
+  try{
+
+    const res = await fetch(API + '/profile', {
+      headers:{
+        Authorization:'Bearer ' + token
+      }
+    });
+
+    const data = await res.json();
+
+    document.getElementById('welcomeName').innerText =
+      'Welcome, ' + data.name;
+
+    document.getElementById('name').innerText =
+      data.name;
+
+    document.getElementById('email').innerText =
+      data.email;
+
+    document.getElementById('phone').innerText =
+      data.phone;
+
+    document.getElementById('balance').innerText =
+      '₹' + Number(data.balance).toLocaleString();
+
+    document.getElementById('joined').innerText =
+      new Date(data.created_at).toLocaleDateString();
+
+    document.getElementById('profileName').innerText =
+      data.name;
+
+    document.getElementById('profileEmail').innerText =
+      data.email;
+
+    document.getElementById('profilePhone').innerText =
+      data.phone;
+
+    realAccountNumber = data.account_number;
+
+    document.getElementById('accountNumber').innerText =
+      '••••••' + data.account_number.slice(-4);
+
+  }catch(err){
+
+    console.log(err);
+
+  }
+
+}
+
+async function loadTransactions(){
+
+  const token = localStorage.getItem('token');
+
+  try{
+
+    const res = await fetch(API + '/transactions', {
+      headers:{
+        Authorization:'Bearer ' + token
+      }
+    });
+
+    const data = await res.json();
+
+    const list = document.getElementById('transactionList');
+
+    if(data.length === 0){
+
+      list.innerHTML =
+      '<p style="color:#90a0d9;">No transactions yet.</p>';
+
+      return;
+
+    }
+
+    list.innerHTML = '';
+
+    data.slice(0,10).forEach(tx => {
+
+      list.innerHTML += `
+
+      <div class="transaction">
+
+        <div>
+
+          <div class="type ${tx.type}">
+            ${tx.type}
+          </div>
+
+          <div class="date">
+            ${new Date(tx.created_at).toLocaleString()}
+          </div>
+
+        </div>
+
+        <div class="amount ${tx.type}">
+          ₹${tx.amount}
+        </div>
+
+      </div>
+
+      `;
+
+    });
+
+  }catch(err){
+
+    console.log(err);
+
+  }
+
+}
+
+async function depositMoney(){
+
+  const amount = prompt('Enter deposit amount');
+
+  if(!amount || amount <= 0){
+    return;
+  }
+
+  const token = localStorage.getItem('token');
+
+  try{
+
+    const res = await fetch(API + '/deposit', {
+
+      method:'POST',
+
+      headers:{
+        'Content-Type':'application/json',
+        Authorization:'Bearer ' + token
+      },
+
+      body:JSON.stringify({
+        amount
+      })
+
+    });
+
+    const data = await res.json();
+
+    if(res.ok){
+
+      alert('Deposit Successful');
+
+      loadProfile();
+      loadTransactions();
+
+    }else{
+
+      alert(data.message);
+
+    }
+
+  }catch(err){
+
+    alert('Server Error');
+
+  }
+
+}
+
+async function withdrawMoney(){
+
+  const amount = prompt('Enter withdrawal amount');
+
+  if(!amount || amount <= 0){
+    return;
+  }
+
+  const token = localStorage.getItem('token');
+
+  try{
+
+    const res = await fetch(API + '/withdraw', {
+
+      method:'POST',
+
+      headers:{
+        'Content-Type':'application/json',
+        Authorization:'Bearer ' + token
+      },
+
+      body:JSON.stringify({
+        amount
+      })
+
+    });
+
+    const data = await res.json();
+
+    if(res.ok){
+
+      alert('Withdrawal Successful');
+
+      loadProfile();
+      loadTransactions();
+
+    }else{
+
+      alert(data.message);
+
+    }
+
+  }catch(err){
+
+    alert('Server Error');
+
+  }
+
+}
+
+async function transferMoney(){
+
+  const recipient = prompt('Enter recipient phone number');
+
+  const amount = prompt('Enter transfer amount');
+
+  if(!recipient || !amount || amount <= 0){
+    return;
+  }
+
+  const token = localStorage.getItem('token');
+
+  try{
+
+    const res = await fetch(API + '/transfer', {
+
+      method:'POST',
+
+      headers:{
+        'Content-Type':'application/json',
+        Authorization:'Bearer ' + token
+      },
+
+      body:JSON.stringify({
+        recipient_phone:recipient,
+        amount
+      })
+
+    });
+
+    const data = await res.json();
+
+    if(res.ok){
+
+      alert('Transfer Successful');
+
+      loadProfile();
+      loadTransactions();
+
+    }else{
+
+      alert(data.message);
+
+    }
+
+  }catch(err){
+
+    alert('Server Error');
+
+  }
+
+}
+
+function toggleAccountNumber(){
+
+  visible = !visible;
+
+  const acc = document.getElementById('accountNumber');
+
+  const btn = document.getElementById('toggleAccBtn');
+
+  if(visible){
+
+    acc.innerText = realAccountNumber;
+
+    btn.innerText = 'Hide';
+
+  }else{
+
+    acc.innerText =
+      '••••••' + realAccountNumber.slice(-4);
+
+    btn.innerText = 'Show';
+
+  }
+
+}
+
+function logout(){
+
+  localStorage.removeItem('token');
+
+  window.location.href = 'login.html';
+
+}
+
+loadProfile();
+loadTransactions();
+
+</script>
+
+
+
+</body>
+</html>
